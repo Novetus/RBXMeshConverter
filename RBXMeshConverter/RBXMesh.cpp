@@ -7,14 +7,14 @@ void RBXMesh::Write(std::ostream& stream)
 		sizeof(MeshHeader),
 		sizeof(MeshVertex),
 		sizeof(MeshFace),
-		vertices.size(),
-		faces.size()
+		(uint32_t)vertices.size(),
+		(uint32_t)faces.size()
 	};
 
 	stream << meshVersion << std::endl;
 	stream.write((char*)&header, sizeof(MeshHeader));
-	stream.write((char*)&vertices[0], sizeof(MeshVertex) * vertices.size());
-	stream.write((char*)&faces[0], sizeof(MeshFace) * faces.size());
+	stream.write((char*)&vertices[0], std::streamsize(sizeof(MeshVertex)) * vertices.size());
+	stream.write((char*)&faces[0], std::streamsize(sizeof(MeshFace)) * faces.size());
 }
 
 RBXMesh* RBXMesh::FromOBJ(objl::Loader& obj)
@@ -45,9 +45,9 @@ RBXMesh* RBXMesh::FromOBJ(objl::Loader& obj)
 		faces.push_back(
 			MeshFace
 			{
-				*it,
-				*(it + 1),
-				*(it + 2)
+				(uint32_t)*it,
+				(uint32_t)*(it + 1),
+				(uint32_t)*(it + 2)
 			});
 	}
 
